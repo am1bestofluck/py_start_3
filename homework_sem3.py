@@ -1,7 +1,9 @@
 """
-scenario - увязывает все 5 задач в последовательность
+scenario - увязывает все 5 задач в последовательность  
 
 t1 - находит сумму значений нечётных позиций в списке.  
+
+    sum_positions_by_index - ядро t1.  
 
 t2 - перемножает края списка, двигаясь к центру.  
 
@@ -11,20 +13,24 @@ t4 - преобразовывает десятичное число в двои�
 
 t5 - выводит числа Фибоначчи с базой от -N до N.  
     
-    winged_fib - ядро t5.  
-"""
+    winged_fib - ядро t5.
 
+сопроводительные:
+    fib - считаем одно число Фибоначи
+"""
+from homework_sem1 import Break, validate_input
+from typing import Dict, List
+from copy import deepcopy
+import sys
+import random
+__all__ = ['fib']
 __version__ = "#3"
 __author__ = "anton6733@gmail.com"
 
 # standart imports
-import random
-import sys
-from copy import deepcopy
-from typing import Dict, List
 
 # local imports
-from homework_sem1 import Break, validate_input
+
 
 def fib(seed: int) -> int:
     """считаем число ряда Фибоначи seed- порядка.  """
@@ -35,10 +41,11 @@ def fib(seed: int) -> int:
         a, b = b, a+b  # такое решение прямо на сайте python :( :D
     return a
 
+
 def sum_positions_by_index(
-    list_:List[int|float],
+    list_: List[int | float],
     sum_odd: bool = True
-    ) -> int | float:
+) -> int | float:
     """Возвращаем сумму значений в зависимости от чётности индексов.  
 
     list_ список к суммированию.  
@@ -51,9 +58,11 @@ def sum_positions_by_index(
         if i % 2 == sum_odd:
             output += list_[i]
     return output
+
+
 def winged_fib(limit: int) -> Dict[int, int]:
     """Выводим числа Фибоначи с ключами от -limit до limit включительно
-    
+
     limit - край последовательности
     """
     """Для этого Мы сначала проходимся по положительному крылу,
@@ -67,13 +76,12 @@ def winged_fib(limit: int) -> Dict[int, int]:
     tmp, output = {}, {}
     for iteration_key in range(0, abs(limit) + 1, 1):
         tmp[iteration_key] = fib(seed=iteration_key)
-    for key in range (-1, - (abs(limit) + 1), -1):
-        tmp[key] = tmp[-key] if key % 2 else  - tmp[-key]
-    keys_sorted = sorted(list(tmp.keys() ) )
+    for key in range(-1, - (abs(limit) + 1), -1):
+        tmp[key] = tmp[-key] if key % 2 else - tmp[-key]
+    keys_sorted = sorted(list(tmp.keys()))
     for out in keys_sorted:
-        output[out] = tmp [out]
+        output[out] = tmp[out]
     return output
-
 
 
 def main():
@@ -88,11 +96,16 @@ def main():
     """
     accepted_args = {'t1', 't2', 't3', 't4', 't5', 'scenario'}
 
-    def t1() -> None:  # находит сумму значений нечётных позиций в списке
+    
+    def t1(list_: List[int | float] = []) -> int | float: # сумма по признаку
         # print(float_summarize_signs.__doc__)
         # print(float_summarize_signs(validate_input_float(short_note="float!")))
-        Break()
-        return None
+        print(sum_positions_by_index.__doc__)
+        if not list_:
+            list_= random.choices(range(1,101), k=10)
+            print(list_)
+        return sum_positions_by_index(list_=list_,sum_odd=True)
+        
 
     def t2() -> None:  # перемножает края списка, двигаясь к центру.
         Break()
@@ -110,7 +123,7 @@ def main():
         print(winged_fib.__doc__)
         tmp = winged_fib(
             validate_input(short_note="предел индекса для fib")
-            )
+        )
         output = list(tmp.values())
         print(output)
         Break()
@@ -127,7 +140,8 @@ def main():
         print(scenario.__doc__)
         fibs = t5()
         print(fibs)
-
+        print(t1(fibs))
+        Break()
 
     if len(sys.argv) > 1:
         if 'scenario' in sys.argv[1:]:
@@ -144,7 +158,7 @@ def main():
                 executed.append(arg)
                 match arg:
                     case 't1':
-                        t1()
+                        print(t1())
                     case 't2':
                         t2()
                     case 't3':
