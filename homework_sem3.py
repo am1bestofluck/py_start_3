@@ -18,19 +18,19 @@ t5 - выводит числа Фибоначчи с базой от -N до N.
 сопроводительные:
     fib - считаем одно число Фибоначи
 """
-from homework_sem1 import Break, validate_input
-from typing import Dict, List
-from copy import deepcopy
-import sys
-import random
+
 __all__ = ['fib']
 __version__ = "#3"
 __author__ = "anton6733@gmail.com"
 
 # standart imports
+import random
+import sys
+from copy import deepcopy
+from typing import Dict, List
 
 # local imports
-
+from homework_sem1 import Break, validate_input
 
 def fib(seed: int) -> int:
     """считаем число ряда Фибоначи seed- порядка.  """
@@ -53,11 +53,12 @@ def sum_positions_by_index(
     sum_odd - если True - прибавляем значения на нечётных индексах; 
     иначе - на нечётных.  
     """
-    output = 0
+    """round_to - округление для float"""
+    output, round_to = 0, 2
     for i in range(len(list_)):
         if i % 2 == sum_odd:
             output += list_[i]
-    return output
+    return round(output,round_to) if isinstance(output,float) else output 
 
 
 def winged_fib(limit: int) -> Dict[int, int]:
@@ -81,6 +82,32 @@ def winged_fib(limit: int) -> Dict[int, int]:
     keys_sorted = sorted(list(tmp.keys()))
     for out in keys_sorted:
         output[out] = tmp[out]
+    return output
+
+
+def edge_to_center_action(list_: List [int | float]) -> List [int | float]:
+    """Движется по индексам с краёв входящего списка к центру, добавляя 
+    в выводной список суммы крайних элементов под этими индексами.
+
+    list_ - входящий список
+
+    output - вывод
+    """
+    """round_to - если float - округляем до этого разряда"""
+    round_to = 2 
+    
+    def plus( a: int| float, b: int | float):
+        """вынес действие, если что - лечше заменить"""
+        return a+b if isinstance(a+b, int) else round()
+    output = []
+    i, j = 0, len(list_)-1
+    while i < j:
+        output.append(plus(a=list_[i], b=list_[j]))
+        i += 1
+        j += 1
+    else:
+        if len(list_) % 2:
+            True
     return output
 
 
@@ -108,7 +135,6 @@ def main():
         
 
     def t2() -> None:  # перемножает края списка, двигаясь к центру.
-        Break()
         return None
 
     def t3() -> None:  # вычитает предельные дробные части элеметов списка
@@ -125,8 +151,6 @@ def main():
             validate_input(short_note="предел индекса для fib")
         )
         output = list(tmp.values())
-        print(output)
-        Break()
         return output
 
     def scenario():
@@ -140,8 +164,14 @@ def main():
         print(scenario.__doc__)
         fibs = t5()
         print(fibs)
+        Break()
+        print(fibs)
         print(t1(fibs))
         Break()
+        print(fibs)
+        print(t2)
+        Break()
+
 
     if len(sys.argv) > 1:
         if 'scenario' in sys.argv[1:]:
@@ -167,6 +197,7 @@ def main():
                         t4()
                     case 't5':
                         print(t5())
+                        Break()
 
     else:
         scenario()
