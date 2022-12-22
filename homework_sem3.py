@@ -6,6 +6,7 @@ t1 - находит сумму значений нечётных позиций 
     sum_positions_by_index - ядро t1.  
 
 t2 - перемножает края списка, двигаясь к центру.  
+    eedge_to_center_action - ядро t2.
 
 t3 - вычитает предельные отклонения значений списка от целых чисел.  
 
@@ -96,18 +97,18 @@ def edge_to_center_action(list_: List [int | float]) -> List [int | float]:
     """round_to - если float - округляем до этого разряда"""
     round_to = 2 
     
-    def plus( a: int| float, b: int | float):
+    def mult( a: int| float, b: int | float):
         """вынес действие, если что - лечше заменить"""
-        return a+b if isinstance(a+b, int) else round()
+        return a*b if isinstance(a*b, int) else round(a*b ,round_to)
     output = []
     i, j = 0, len(list_)-1
     while i < j:
-        output.append(plus(a=list_[i], b=list_[j]))
+        output.append(mult(a=list_[i], b=list_[j]))
         i += 1
-        j += 1
+        j -= 1
     else:
-        if len(list_) % 2:
-            True
+        if i == j:
+            output.append(mult(a=list_[i], b=list_[j]))
     return output
 
 
@@ -129,13 +130,17 @@ def main():
         # print(float_summarize_signs(validate_input_float(short_note="float!")))
         print(sum_positions_by_index.__doc__)
         if not list_:
-            list_= random.choices(range(1,101), k=10)
+            list_ = random.choices(range(1,101), k=10)
             print(list_)
         return sum_positions_by_index(list_=list_,sum_odd=True)
         
 
-    def t2() -> None:  # перемножает края списка, двигаясь к центру.
-        return None
+    def t2( list_: List[int | float] = []) -> None:  # перемножает края списка, двигаясь к центру.
+        print( edge_to_center_action.__doc__)
+        if not list_:
+            list_ = random.choices(range(1,101), k=3)
+            print( list_)
+        return edge_to_center_action( list_=list_)
 
     def t3() -> None:  # вычитает предельные дробные части элеметов списка
         Break()
@@ -169,7 +174,7 @@ def main():
         print(t1(fibs))
         Break()
         print(fibs)
-        print(t2)
+        print(t2())
         Break()
 
 
@@ -190,7 +195,7 @@ def main():
                     case 't1':
                         print(t1())
                     case 't2':
-                        t2()
+                        print(t2())
                     case 't3':
                         t3()
                     case 't4':
