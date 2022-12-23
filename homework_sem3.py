@@ -53,7 +53,7 @@ def exract_fraction(number: float) -> float:
         """возвращает дробную часть числа"""
         positive = number > 0
         return (number - math.floor(number) if positive
-                else number + math.ceil(number))
+                else number - math.ceil(number))
 
 
 def fib(seed: int) -> int:
@@ -173,14 +173,17 @@ def t3(list_i: List[float] = [], round_to: int = 3) -> float:
     return round(max_ - min_, round_to)
 
 
-def t4(base: int | float) -> str:
+def t4(base: int | float,float_precision: int = 3) -> str:
     """переводим десятичное число в двоичное.
 
     Вызывает TypeError если тип base соответствует аннотации
+
+    float_precision - точность округления.  
+
+    base - предмет конвертации  
     """
     """{
-        positive_int,
-        negative_int,
+        parse_int
         positive_float,
         negative_float
     } - сопроводительные функции в зависимости от типа base
@@ -200,14 +203,14 @@ def t4(base: int | float) -> str:
         # или вот https://cs.calvin.edu/activities/books/rit/chapter5/negative.htm#:~:text=The%20simplest%20is%20to%20simply,would%20be%20written%20as%2011100.
         # по итогу решил наследовать практику bin()
         output = ''
-        base_i = base
+        base_i = abs(base)
         while base_i > 0:
             output = f'{str(base_i % 2)}' + output
             base_i //= 2
         prefix = '0b' if base > 0 else '-0b'
         return f'{prefix}{output}'
 
-    def positive_float(base: float) -> str:
+    def positive_float(base: float,precision = float_precision) -> str:
         """переводим положительное дробное число в двоичную систему"""
         """дробим число на целую и дробную части. 
         Целую часть считаем как позитив инт.  
@@ -219,7 +222,6 @@ def t4(base: int | float) -> str:
         base_fractured = [int(base),exract_fraction(base)]
         whole_part = parse_int(base_fractured[0])
         fractured_part = '.'
-        precision = len(str(base)[str(base).index('.')+1:])
         base_fractured[1] = round(base_fractured[1],precision)
         tmp = base_fractured[1]
         for i in range( precision, 0, -1):
@@ -301,6 +303,16 @@ def main():
         print(fibs)
         print(t2(fibs))
         Break()
+        floats = list(map(add_floating_point,deepcopy(fibs)))
+        print(floats)
+        print(t3(floats))
+        Break()
+        some_int = random.choice(fibs)
+        some_float = random.choice(floats)
+        print(f'binary of {str(some_int)} = {t4(some_int)}')
+        print(f'binary of {str(some_float)} = {t4(some_float)}')
+
+         
 
     if len(sys.argv) > 1:
         if 'scenario' in sys.argv[1:]:
