@@ -49,6 +49,13 @@ def input_int(invite: str = '') -> int:
     return invite
 
 
+def exract_fraction(number: float) -> float:
+        """возвращает дробную часть числа"""
+        positive = number > 0
+        return (number - math.floor(number) if positive
+                else number + math.ceil(number))
+
+
 def fib(seed: int) -> int:
     """считаем число ряда Фибоначи seed- порядка.  """
     a, b = 0, 1
@@ -153,12 +160,6 @@ def t3(list_i: List[float] = [], round_to: int = 3) -> float:
     round_to - вывод округляем до этого знака
     """
 
-    def exract_fraction(number: float) -> float:
-        """возвращает дробную часть числа"""
-        positive = number > 0
-        return (number - math.floor(number) if positive
-                else number + math.ceil(number))
-
     if not list_i:
         list_i = list(map(
             add_floating_point, random.choices(range(1, 11), k=10)))
@@ -192,49 +193,47 @@ def t4(base: int | float) -> str:
             + f', not {type(base).__name__}!')
         )
 
-    def positive_int(base: int) -> str:
+    def parse_int(base: int) -> str:
+        # вообще в интернете минимум два подхода по переводу 
+        # отрицательных интов в двоичную систему.
+        # вот https://www.instructables.com/Convert-Negative-Numbers-to-Binary/
+        # или вот https://cs.calvin.edu/activities/books/rit/chapter5/negative.htm#:~:text=The%20simplest%20is%20to%20simply,would%20be%20written%20as%2011100.
+        # по итогу решил наследовать практику bin()
         output = ''
         base_i = base
         while base_i > 0:
             output = f'{str(base_i % 2)}' + output
             base_i //= 2
-        return output
-
-    def negative_int(base: int) -> str:
-        """2’s Complement Representation
-        отзеркаливаем знаки и накидываем единичку по правилам 
-        бинарного сложения.  
-        
-        https://www.instructables.com/Convert-Negative-Numbers-to-Binary/
-        """
-        """
-        Создалось впечетление что подходов несколько
-        и программист сам решает какой реализовать...
-        Осталось понять как различить 
-        такое -15(10000) и обычное 16(10000) :-\
-        """
-        invert_positive=(positive_int(abs(base))
-        .replace('1', '#')
-        .replace('0', '1')
-        .replace('#','0'))
-        if set(invert_positive) == {'0'}:
-            return ''.join(['1',invert_positive])
-        for i in range(len(invert_positive)-1,-1,-1):
-            if invert_positive[i] == '0':
-                return ''.join([invert_positive[0:i],
-                '1', invert_positive[i+1:]])
-        
-
+        prefix = '0b' if base > 0 else '-0b'
+        return f'{prefix}{output}'
 
     def positive_float(base: float) -> str:
-        return '0.1'
+        """переводим положительное дробное число в двоичную систему"""
+        """дробим число на целую и дробную части. 
+        Целую часть считаем как позитив инт.  
+        Дробную часть рекурсивно умножаем на два и "целое" от результата
+         строково прибавляем к части после запятой, k раз
+         k- точность, кол-во знаков после запятой"""
+        
+        
+        base_fractured = [int(base),exract_fraction(base)]
+        whole_part = parse_int(base_fractured[0])
+        fractured_part = '.'
+        precision = len(str(base)[str(base).index('.')+1:])
+        base_fractured[1] = round(base_fractured[1],precision)
+        tmp = base_fractured[1]
+        for i in range( precision, 0, -1):
+            tmp = round(tmp*2,precision)
+            fractured_part += str (int(tmp))
+            tmp = round(tmp - int(tmp),precision)
+        output = f'{whole_part}{fractured_part}'
+        return output
 
     def negative_float(base: float) -> str:
         return '-0.1'
-
     if isinstance(base, int):
-        return positive_int(base) if base > 0 else negative_int(base)
-    return positive_float(base) if base > 0 else negative_float(base)
+        return parse_int(base) 
+    return positive_float(base)# if base > 0 else negative_float(base)
     # Должно работать с отрицательными флотами...
 
 
@@ -324,13 +323,12 @@ def main():
                     case 't3':
                         print(t3())
                     case 't4':
-                        print(t4(15))
-                        print(t4(-15))
-                        print(t4(16))
-                        print(t4(-16))
-                        print(t4(1.0))
+                        print(t4(15.000))
+                        print(t4(15.470))
+                        print(t4(-15.000))
+                        print(t4(1.47))
+                        print(t4(1.470))
                         print(t4(-1.0))
-                        print(t4('1.0'))
                     case 't5':
                         print(t5())
                         Break()
