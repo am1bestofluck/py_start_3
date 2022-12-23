@@ -137,7 +137,7 @@ def edge_to_center_action(
 
 def add_floating_point(base: int = 0, round_to: int = 3) -> float:
     """рандомим дробную часть числа.
-    
+
     base - прибавляем дробь к этому
 
     round_to - округляем до этого знака
@@ -153,12 +153,12 @@ def t3(list_i: List[float] = [], round_to: int = 3) -> float:
     round_to - вывод округляем до этого знака
     """
 
-    def exract_fraction(number : float) -> float:
+    def exract_fraction(number: float) -> float:
         """возвращает дробную часть числа"""
         positive = number > 0
-        return (number - math.floor(number) if positive 
-        else number + math.ceil(number))
-    
+        return (number - math.floor(number) if positive
+                else number + math.ceil(number))
+
     if not list_i:
         list_i = list(map(
             add_floating_point, random.choices(range(1, 11), k=10)))
@@ -166,10 +166,76 @@ def t3(list_i: List[float] = [], round_to: int = 3) -> float:
     max_ = exract_fraction(list_i[0])
     min_ = exract_fraction(list_i[0])
     for i in list_i[1:]:
-        max_ = max(max_,exract_fraction(i))
+        max_ = max(max_, exract_fraction(i))
         min_ = min(min_, exract_fraction(i))
-    print( f'{min_=}', f'{max_=}')
-    return round(max_ - min_ ,round_to)
+    print(f'{min_=}', f'{max_=}')
+    return round(max_ - min_, round_to)
+
+
+def t4(base: int | float) -> str:
+    """переводим десятичное число в двоичное.
+
+    Вызывает TypeError если тип base соответствует аннотации
+    """
+    """{
+        positive_int,
+        negative_int,
+        positive_float,
+        negative_float
+    } - сопроводительные функции в зависимости от типа base
+    """
+
+    print(base)
+    if not isinstance(base, t4.__annotations__['base']):
+        raise TypeError((
+            f'type(base) in ({t4.__annotations__["base"]})'
+            + f', not {type(base).__name__}!')
+        )
+
+    def positive_int(base: int) -> str:
+        output = ''
+        base_i = base
+        while base_i > 0:
+            output = f'{str(base_i % 2)}' + output
+            base_i //= 2
+        return output
+
+    def negative_int(base: int) -> str:
+        """2’s Complement Representation
+        отзеркаливаем знаки и накидываем единичку по правилам 
+        бинарного сложения.  
+        
+        https://www.instructables.com/Convert-Negative-Numbers-to-Binary/
+        """
+        """
+        Создалось впечетление что подходов несколько
+        и программист сам решает какой реализовать...
+        Осталось понять как различить 
+        такое -15(10000) и обычное 16(10000) :-\
+        """
+        invert_positive=(positive_int(abs(base))
+        .replace('1', '#')
+        .replace('0', '1')
+        .replace('#','0'))
+        if set(invert_positive) == {'0'}:
+            return ''.join(['1',invert_positive])
+        for i in range(len(invert_positive)-1,-1,-1):
+            if invert_positive[i] == '0':
+                return ''.join([invert_positive[0:i],
+                '1', invert_positive[i+1:]])
+        
+
+
+    def positive_float(base: float) -> str:
+        return '0.1'
+
+    def negative_float(base: float) -> str:
+        return '-0.1'
+
+    if isinstance(base, int):
+        return positive_int(base) if base > 0 else negative_int(base)
+    return positive_float(base) if base > 0 else negative_float(base)
+    # Должно работать с отрицательными флотами...
 
 
 def main():
@@ -206,9 +272,9 @@ def main():
     #         print(list_)
     #     return None
 
-    def t4() -> None:  # преобразовывает десятичное число в двоичное.
-        Break()
-        return None
+    # def t4() -> None:  # преобразовывает десятичное число в двоичное.
+    #     Break()
+    #     return None
 
     def t5() -> List[int]:  # выводит числа Фибоначчи с базой от -N до N.
         print(winged_fib.__doc__)
@@ -258,7 +324,13 @@ def main():
                     case 't3':
                         print(t3())
                     case 't4':
-                        t4()
+                        print(t4(15))
+                        print(t4(-15))
+                        print(t4(16))
+                        print(t4(-16))
+                        print(t4(1.0))
+                        print(t4(-1.0))
+                        print(t4('1.0'))
                     case 't5':
                         print(t5())
                         Break()
