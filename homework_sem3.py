@@ -25,6 +25,7 @@ __version__ = "#3"
 __author__ = "anton6733@gmail.com"
 
 # standart imports
+import math
 import random
 import sys
 from copy import deepcopy
@@ -60,7 +61,7 @@ def fib(seed: int) -> int:
 
 def sum_positions_by_index(
     list_: List[int | float],
-    sum_odd: bool = True
+    sum_odd: bool = True, round_to: int = 2
 ) -> int | float:
     """Возвращаем сумму значений в зависимости от чётности индексов.  
 
@@ -70,7 +71,7 @@ def sum_positions_by_index(
     иначе - на нечётных.  
     """
     """round_to - округление для float"""
-    output, round_to = 0, 2
+    output = 0
     for i in range(len(list_)):
         if i % 2 == sum_odd:
             output += list_[i]
@@ -86,9 +87,9 @@ def winged_fib(limit: int) -> Dict[int, int]:
     потом отзеркаливаем негативное крыло, переворачивая значение для
     нечётных индексов
     
-    tmp - расчёт положительного крыла
-    output - ответ в зачёт
+    tmp - несортированный вывод
     keys_sorted - упорядочиваем ключи.
+    output - ответ в зачёт
     """
     tmp, output = {}, {}
     for iteration_key in range(0, abs(limit) + 1, 1):
@@ -102,15 +103,15 @@ def winged_fib(limit: int) -> Dict[int, int]:
 
 
 def edge_to_center_action(
-    list_i: List[int | float], round_to: int = 2) -> List[int | float]:
+        list_i: List[int | float], round_to: int = 2) -> List[int | float]:
     """Движется по индексам с краёв входящего списка к центру, добавляя 
-    в выводной список суммы крайних элементов под этими индексами.
+    в выводной список произведения крайних элементов под этими индексами.
 
     list_i - входящий список
 
     round_to - если float: округляем до этого знака 
     """
-    
+
     """
     round_to - если float - округляем до этого разряда
 
@@ -132,6 +133,43 @@ def edge_to_center_action(
         if i == j:
             output.append(mult(a=list_i[i], b=list_i[j]))
     return output
+
+
+def add_floating_point(base: int = 0, round_to: int = 3) -> float:
+    """рандомим дробную часть числа.
+    
+    base - прибавляем дробь к этому
+
+    round_to - округляем до этого знака
+    """
+    return base + round(random.random(), 3)
+
+
+def t3(list_i: List[float] = [], round_to: int = 3) -> float:
+    """Возвращает разность предельных дробных частей списка.  
+
+    list_i - входящий список
+
+    round_to - вывод округляем до этого знака
+    """
+
+    def exract_fraction(number : float) -> float:
+        """возвращает дробную часть числа"""
+        positive = number > 0
+        return (number - math.floor(number) if positive 
+        else number + math.ceil(number))
+    
+    if not list_i:
+        list_i = list(map(
+            add_floating_point, random.choices(range(1, 11), k=10)))
+        print(list_i)
+    max_ = exract_fraction(list_i[0])
+    min_ = exract_fraction(list_i[0])
+    for i in list_i[1:]:
+        max_ = max(max_,exract_fraction(i))
+        min_ = min(min_, exract_fraction(i))
+    print( f'{min_=}', f'{max_=}')
+    return round(max_ - min_ ,round_to)
 
 
 def main():
@@ -156,14 +194,17 @@ def main():
         return sum_positions_by_index(list_=list_, sum_odd=True)
 
     def t2(list_: List[int | float] = []) -> None:
-        if not list_: 
-            list_ = random.choices(range(1,11),k=3)
+        if not list_:
+            list_ = random.choices(range(1, 11), k=3)
             print(list_)
         return edge_to_center_action(list_i=list_)
 
-    def t3() -> None:  # вычитает предельные дробные части элеметов списка
-        Break()
-        return None
+    # вычитает предельные дробные части элеметов списка
+    # def t3(list_: List[int | float] = []) -> float:
+    #     if not list_:
+    #         list_ = random.choices(range(1, 11), k=3)
+    #         print(list_)
+    #     return None
 
     def t4() -> None:  # преобразовывает десятичное число в двоичное.
         Break()
@@ -215,7 +256,7 @@ def main():
                     case 't2':
                         print(t2())
                     case 't3':
-                        t3()
+                        print(t3())
                     case 't4':
                         t4()
                     case 't5':
