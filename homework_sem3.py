@@ -1,19 +1,19 @@
 """
-scenario - увязывает все 5 задач в последовательность  
+scenario - увязывает все 5 задач в последовательность
 
-t1 - находит сумму значений нечётных позиций в списке.  
+t1 - находит сумму значений нечётных позиций в списке.
 
-    sum_positions_by_index - ядро t1.  
+    sum_positions_by_index - ядро t1.
 
-t2 - перемножает края списка, двигаясь к центру.  
+t2 - перемножает края списка, двигаясь к центру.
     eedge_to_center_action - ядро t2.
 
-t3 - вычитает предельные отклонения значений списка от целых чисел.  
+t3 - вычитает предельные отклонения значений списка от целых чисел.
 
-t4 - преобразовывает десятичное число в двоичное.  
+t4 - преобразовывает десятичное число в двоичное.
 
-t5 - выводит числа Фибоначчи с базой от -N до N.  
-    
+t5 - выводит числа Фибоначчи с базой от -N до N.
+
     winged_fib - ядро t5.
 
 сопроводительные:
@@ -33,7 +33,8 @@ from typing import Dict, List
 
 # local imports
 from homework_sem1 import Break
-from binary_subfunctions import normalize, exract_fraction
+from binary_subfunctions import normalize, exract_fraction, fractial_to_bin
+
 
 def input_int(invite: str = '') -> int:
     """Ловим инт пока получается %).  """
@@ -70,12 +71,12 @@ def sum_positions_by_index(
     list_: List[int | float],
     sum_odd: bool = True, round_to: int = 2
 ) -> int | float:
-    """Возвращаем сумму значений в зависимости от чётности индексов.  
+    """Возвращаем сумму значений в зависимости от чётности индексов.
 
-    list_ список к суммированию.  
+    list_ список к суммированию.
 
-    sum_odd - если True - прибавляем значения на нечётных индексах; 
-    иначе - на нечётных.  
+    sum_odd - если True - прибавляем значения на нечётных индексах;
+    иначе - на нечётных.
     """
     """round_to - округление для float"""
     output = 0
@@ -93,7 +94,7 @@ def winged_fib(limit: int) -> Dict[int, int]:
     """Для этого Мы сначала проходимся по положительному крылу,
     потом отзеркаливаем негативное крыло, переворачивая значение для
     нечётных индексов
-    
+
     tmp - несортированный вывод
     keys_sorted - упорядочиваем ключи.
     output - ответ в зачёт
@@ -111,18 +112,18 @@ def winged_fib(limit: int) -> Dict[int, int]:
 
 def edge_to_center_action(
         list_i: List[int | float], round_to: int = 2) -> List[int | float]:
-    """Движется по индексам с краёв входящего списка к центру, добавляя 
+    """Движется по индексам с краёв входящего списка к центру, добавляя
     в выводной список произведения крайних элементов под этими индексами.
 
     list_i - входящий список
 
-    round_to - если float: округляем до этого знака 
+    round_to - если float: округляем до этого знака
     """
 
     """
     round_to - если float - округляем до этого разряда
 
-    mult - вынес действие с краями отдельно "на случай расширения" 
+    mult - вынес действие с краями отдельно "на случай расширения"
     """
 
     def mult(a: int | float, b: int | float, round_to: int = round_to):
@@ -153,7 +154,7 @@ def add_floating_point(base: int = 0, round_to: int = 3) -> float:
 
 
 def t3(list_i: List[float] = [], round_to: int = 3) -> float:
-    """Возвращает разность предельных дробных частей списка.  
+    """Возвращает разность предельных дробных частей списка.
 
     list_i - входящий список
 
@@ -173,7 +174,7 @@ def t3(list_i: List[float] = [], round_to: int = 3) -> float:
     return round(max_ - min_, round_to)
 
 
-def t4(base: int | float,float_precision: int = 3) -> str:
+def t4(base: int | float, float_precision: int = 3) -> str:
     # кажется алгоритм конвертации зависит от архитектуры и
     # хотелок инженеров ._.
     """переводим десятичное число в двоичное.
@@ -182,9 +183,9 @@ def t4(base: int | float,float_precision: int = 3) -> str:
 
     Вызывает NotImplementedError для чисел размером больше 32 бит...
 
-    float_precision - точность округления.  
+    float_precision - точность округления.
 
-    base - предмет конвертации  
+    base - предмет конвертации
     """
     """{
         parse_int
@@ -201,11 +202,11 @@ def t4(base: int | float,float_precision: int = 3) -> str:
         )
 
     def parse_int(base: int) -> str:
-        # вообще в интернете минимум два подхода по переводу 
+        # вообще в интернете минимум два подхода по переводу
         # отрицательных интов в двоичную систему.
         # вот https://www.instructables.com/Convert-Negative-Numbers-to-Binary/
         # или вот https://cs.calvin.edu/activities/books/rit/chapter5/negative.htm#:~:text=The%20simplest%20is%20to%20simply,would%20be%20written%20as%2011100.
-        # по итогу решил наследовать практику bin()
+        # по итогу решил наследовать практику bin() - для интов
         output = ''
         base_i = abs(base)
         while base_i > 0:
@@ -214,70 +215,73 @@ def t4(base: int | float,float_precision: int = 3) -> str:
         prefix = '0b' if base > 0 else '-0b'
         return f'{prefix}{output}'
 
-    def positive_float(base: float,precision = float_precision) -> str:
+    def positive_float(base: float, precision=float_precision) -> str:
         """переводим положительное дробное число в двоичную систему"""
-        """дробим число на целую и дробную части. 
-        Целую часть считаем как позитив инт.  
+        """дробим число на целую и дробную части.
+        Целую часть считаем как позитив инт.
         Дробную часть рекурсивно умножаем на два и "целое" от результата
          строково прибавляем к части после запятой, k раз
          k- точность, кол-во знаков после запятой"""
-        
-        
-        base_fractured = [int(base),exract_fraction(base)]
+
+        base_fractured = [int(base), exract_fraction(base)]
         whole_part = parse_int(base_fractured[0])
         fractured_part = '.'
-        base_fractured[1] = round(base_fractured[1],precision)
+        base_fractured[1] = round(base_fractured[1], precision)
         tmp = base_fractured[1]
-        for i in range( precision, 0, -1):
-            tmp = round(tmp*2,precision)
-            fractured_part += str (int(tmp))
-            tmp = round(tmp - int(tmp),precision)
+        for i in range(precision, 0, -1):
+            tmp = round(tmp*2, precision)
+            fractured_part += str(int(tmp))
+            tmp = round(tmp - int(tmp), precision)
         output = f'{whole_part}{fractured_part}'
         return output
 
-    def negative_float(base: float) -> str:
+    def parse_float(base: float) -> str:
         """
+        флоаты это вообще ховайся.
+        # http://cstl-csm.semo.edu/xzhang/Class%20Folder/CS280/Workbook_HTML/FLOATING.htm
         """
         # переводим бинарную дробь в десятичное число
         # .1011 = 1/2 + 0/4 + 1/8 + 1/16 ==
         # 0.5 + 0 + 0.125 + 0. 0625 == 0.6875
-        # слева от точки - по интовым правилам. 
+        # слева от точки - по интовым правилам.
         # :( чо так сложно то :)
         # будем делать short real - числа в 32 бита ._.
         # Sign - первый бит- 0 для положительных; 1 для отрицательных
         # Exponent - 8 бит - наименьшая степень 10 больше числа. Ну т.е.
-        # количество знаков в дроби 
-        # mantissa - само число
-        # например: 
-        # число 0.41 это (s) 0 (e) -1 (m) 4.1 
-        
-        # Штош. Сначала "нормализуем мантиссу". Т.е. двигаем разряд пока
-        # целая часть не поместится в 10**1.
+        # количество знаков в дроби
+        # mantissa - само число, нормализованное, степени базы обрезаем
+        # например:
+        # число 0.41 это (s) 0 (e) -1 (m) 4.1
 
         sign = '1' if base < 0 else '0'
-        exponent_decimal,mantissa_decimal = normalize(base)
+        mantissa_decimal, exponent_decimal = normalize(base)
         if exponent_decimal > 128:
-            raise NotImplementedError('реализовано только для 32-битных' 
-            + 'чисел') 
-        exponent = parse_int(exponent_decimal + 127)[2:].ljust(8,'0')
-        mantissa = ''
+            raise NotImplementedError('реализовано только для 32-битных'
+                                      + 'чисел')
+        exponent = parse_int(exponent_decimal + 127)[2:].rjust(8, '0')
+        mantissa = fractial_to_bin(mantissa_decimal)
+        mantissa = (mantissa.replace('.', '')
+                    # .removeprefix('1')
+                    .rjust(23,'0'))[:23]
 
+        # нормализуем , считаем
         return f'{sign} {exponent} {mantissa}'
 
-
+    return (parse_int(base) if isinstance(base, int)
+            else parse_float(base))
     if isinstance(base, int):
-        return parse_int(base) 
-    return positive_float(base)# if base > 0 else negative_float(base)
+        return parse_int(base)
+    return parse_float(base)  # if base > 0 else negative_float(base)
     # Должно работать с отрицательными флотами...
 
 
 def main():
     """
-    Запускает все задания, если через консоль не указано иное.  
+    Запускает все задания, если через консоль не указано иное.
     аргументы: t1 t2 t3 t4 t5 scenario
     """
     """
-    executed- список выполненных команд, вводим чтобы не запускать 
+    executed- список выполненных команд, вводим чтобы не запускать
     функции по два раза по два раза
     accepted_args - если в аргументах не ЭТО - выходим со справкой :))
     """
@@ -335,7 +339,7 @@ def main():
         print(fibs)
         print(t2(fibs))
         Break()
-        floats = list(map(add_floating_point,deepcopy(fibs)))
+        floats = list(map(add_floating_point, deepcopy(fibs)))
         print(floats)
         print(t3(floats))
         Break()
@@ -343,8 +347,6 @@ def main():
         some_float = random.choice(floats)
         print(f'binary of {str(some_int)} = {t4(some_int)}')
         print(f'binary of {str(some_float)} = {t4(some_float)}')
-
-         
 
     if len(sys.argv) > 1:
         if 'scenario' in sys.argv[1:]:
@@ -367,8 +369,9 @@ def main():
                     case 't3':
                         print(t3())
                     case 't4':
-                        print(t4(15.000))
-                        print(t4(15.470))
+                        print(t4(15))
+                        print(t4(-15))
+                        print(t4(15.47))
                         print(t4(-15.000))
                         print(t4(1.47))
                         print(t4(1.470))
@@ -380,6 +383,8 @@ def main():
     else:
         scenario()
 
+def main():
+    print(t4(-54.558))
 
 if __name__ == "__main__":
     main()
