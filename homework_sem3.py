@@ -20,7 +20,7 @@ __author__ = "anton6733@gmail.com"
 import random
 import sys
 from copy import deepcopy
-from typing import Dict, List
+from typing import List
 
 # local imports
 from homework_sem1 import Break
@@ -95,7 +95,7 @@ def t3(list_i: List[float] = [], round_to: int = 3) -> float:
     return round(max_ - min_, round_to)
 
 
-def t4(base: int | float, float_precision: int = 3) -> str:
+def t4(base: int | float) -> str:
     """переводим десятичное число в двоичное.
 
     Вызывает TypeError если тип base соответствует аннотации
@@ -121,15 +121,12 @@ def t4(base: int | float, float_precision: int = 3) -> str:
             + f', not {type(base).__name__}!')
         )
 
-
-    
-
     return (parse_int(base) if isinstance(base, int)
             else parse_float(base))
 
 
 def t5() -> List[int]:
-    """выводит числа Фибоначчи с базой от -N до N."""
+    """Выводит числа Фибоначчи по обе стороны нуля."""
 
     print(winged_fib.__doc__)
     tmp = winged_fib(
