@@ -1,13 +1,26 @@
+"""
+test_unique - проверял могут ли выводы кодирования повторяться.
+Проверил миллиард флотов, не повторилось :)
 
+parse_int - парсим инты, совпадая с bin()
 
+extract_fraction - выделяем дробную часть числа
 
+normalize - приводим float к одноразрядной целой части домножая на 10**n
+
+fractial_to_bin - переводим "нормальный" float в двоичную систему
+
+add_floating_point - делаем флот из инта
+
+parse_float - переводим "любой" float в двоичную систему
+"""
 
 
 __version__ = "#3"
 __author__ = "anton6733@gmail.com"
+
 import math
 import random
-from typing import List
 
 def parse_int(base: int) -> str:
     # вообще в интернете минимум два подхода по переводу
@@ -55,7 +68,6 @@ def fractial_to_bin(number: float,breakpoint: int = 64) -> str:
     float_part = exract_fraction(number)
     round_to = len(str(float_part)) -2 # 0.
     output = '.'
-    # precision = normalize(number)[1]
     while float_part !=0:
         if not breakpoint: 
             break
@@ -64,6 +76,7 @@ def fractial_to_bin(number: float,breakpoint: int = 64) -> str:
         float_part = round(float_part - int(float_part),round_to)
         breakpoint -= 1
     return f'{whole_part}{output}'
+
 
 def test_unique():
     '''проверяем уникальность выводов.'''
@@ -93,11 +106,42 @@ def add_floating_point(base: int = 0, round_to: int = 3) -> float:
 
 
 def parse_int(base: int) -> str:
-        
-        output = ''
-        base_i = abs(base)
-        while base_i > 0:
-            output = f'{str(base_i % 2)}' + output
-            base_i //= 2
-        prefix = '0b' if base > 0 else '-0b'
-        return f'{prefix}{output}'
+    """переводим base в двоичную систему"""    
+    output = ''
+    base_i = abs(base)
+    while base_i > 0:
+        output = f'{str(base_i % 2)}' + output
+        base_i //= 2
+    prefix = '0b' if base > 0 else '-0b'
+    return f'{prefix}{output}'
+
+
+def parse_float(base: float) -> str:
+    """
+    флоаты это вообще ховайся.
+    # http://cstl-csm.semo.edu/xzhang/Class%20Folder/CS280/Workbook_HTML/FLOATING.htm
+    """
+    # переводим бинарную дробь в десятичное число
+    # .1011 = 1/2 + 0/4 + 1/8 + 1/16 ==
+    # 0.5 + 0 + 0.125 + 0. 0625 == 0.6875
+    # слева от точки - по интовым правилам.
+    # :( чо так сложно то :)
+    # будем делать short real - числа в 32 бита ._.
+    # Sign - первый бит- 0 для положительных; 1 для отрицательных
+    # Exponent - 8 бит - наименьшая степень 10 больше числа. Ну т.е.
+    # количество знаков в дроби
+    # mantissa - само число, нормализованное, степени базы обрезаем
+    # например:
+    # число 0.41 это (s) 0 (e) -1 (m) 4.1
+
+    sign = '1' if base < 0 else '0'
+    mantissa_decimal, exponent_decimal = normalize(base)
+    if exponent_decimal > 128:
+        raise NotImplementedError('реализовано только для 32-битных'
+                                    + 'чисел')
+    exponent = parse_int(exponent_decimal + 127)[2:].rjust(8, '0')
+    mantissa = fractial_to_bin( mantissa_decimal) 
+    mantissa = (mantissa.replace('.', '')
+                .removeprefix('1')  # первую еденичку убирают- тавтология
+                .rjust(23, '0'))[:23]
+    return f'{sign} {exponent} {mantissa}'
