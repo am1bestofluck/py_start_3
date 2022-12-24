@@ -33,7 +33,7 @@ from typing import Dict, List
 
 # local imports
 from homework_sem1 import Break
-
+from binary_subfunctions import normalize, exract_fraction
 
 def input_int(invite: str = '') -> int:
     """Ловим инт пока получается %).  """
@@ -49,11 +49,11 @@ def input_int(invite: str = '') -> int:
     return invite
 
 
-def exract_fraction(number: float) -> float:
-        """возвращает дробную часть числа"""
-        positive = number > 0
-        return (number - math.floor(number) if positive
-                else number - math.ceil(number))
+# def exract_fraction(number: float) -> float:
+#         """возвращает дробную часть числа"""
+#         positive = number > 0
+#         return (number - math.floor(number) if positive
+#                 else number - math.ceil(number))
 
 
 def fib(seed: int) -> int:
@@ -174,9 +174,13 @@ def t3(list_i: List[float] = [], round_to: int = 3) -> float:
 
 
 def t4(base: int | float,float_precision: int = 3) -> str:
+    # кажется алгоритм конвертации зависит от архитектуры и
+    # хотелок инженеров ._.
     """переводим десятичное число в двоичное.
 
     Вызывает TypeError если тип base соответствует аннотации
+
+    Вызывает NotImplementedError для чисел размером больше 32 бит...
 
     float_precision - точность округления.  
 
@@ -232,7 +236,35 @@ def t4(base: int | float,float_precision: int = 3) -> str:
         return output
 
     def negative_float(base: float) -> str:
-        return '-0.1'
+        """
+        """
+        # переводим бинарную дробь в десятичное число
+        # .1011 = 1/2 + 0/4 + 1/8 + 1/16 ==
+        # 0.5 + 0 + 0.125 + 0. 0625 == 0.6875
+        # слева от точки - по интовым правилам. 
+        # :( чо так сложно то :)
+        # будем делать short real - числа в 32 бита ._.
+        # Sign - первый бит- 0 для положительных; 1 для отрицательных
+        # Exponent - 8 бит - наименьшая степень 10 больше числа. Ну т.е.
+        # количество знаков в дроби 
+        # mantissa - само число
+        # например: 
+        # число 0.41 это (s) 0 (e) -1 (m) 4.1 
+        
+        # Штош. Сначала "нормализуем мантиссу". Т.е. двигаем разряд пока
+        # целая часть не поместится в 10**1.
+
+        sign = '1' if base < 0 else '0'
+        exponent_decimal,mantissa_decimal = normalize(base)
+        if exponent_decimal > 128:
+            raise NotImplementedError('реализовано только для 32-битных' 
+            + 'чисел') 
+        exponent = parse_int(exponent_decimal + 127)[2:].ljust(8,'0')
+        mantissa = ''
+
+        return f'{sign} {exponent} {mantissa}'
+
+
     if isinstance(base, int):
         return parse_int(base) 
     return positive_float(base)# if base > 0 else negative_float(base)
