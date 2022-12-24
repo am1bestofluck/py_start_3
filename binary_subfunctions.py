@@ -1,16 +1,29 @@
-import math
-from typing import Tuple
 
-def parse_int(base: int) -> str: # копипаста. WET или ещё один уровень импорта?
-        output = ''
-        base_i = abs(base)
-        while base_i > 0:
-            output = f'{str(base_i % 2)}' + output
-            base_i //= 2
-        prefix = '0b' if base > 0 else '-0b'
-        if not output:
-            output = '0'
-        return f'{prefix}{output}'
+
+
+
+
+__version__ = "#3"
+__author__ = "anton6733@gmail.com"
+import math
+import random
+from typing import List
+
+def parse_int(base: int) -> str:
+    # вообще в интернете минимум два подхода по переводу
+    # отрицательных интов в двоичную систему.
+    # вот https://www.instructables.com/Convert-Negative-Numbers-to-Binary/
+    # или вот https://cs.calvin.edu/activities/books/rit/chapter5/negative.htm#:~:text=The%20simplest%20is%20to%20simply,would%20be%20written%20as%2011100.
+    # по итогу решил наследовать практику bin() - для интов
+    output = ''
+    base_i = abs(base)
+    while base_i > 0:
+        output = f'{str(base_i % 2)}' + output
+        base_i //= 2
+    prefix = '0b' if base > 0 else '-0b'
+    if not output:
+        output = '0'
+    return f'{prefix}{output}'
 
 
 def exract_fraction(number: float) -> float:
@@ -33,6 +46,7 @@ def normalize(base: float) -> tuple[float, int]:
             absbase *= 10
             exp -= 1
     return (round(absbase,digits),exp)
+
 
 def fractial_to_bin(number: float,breakpoint: int = 64) -> str:
     """число должно быть нормализовано до входа сюда хммм :\ """
@@ -66,3 +80,24 @@ def test_unique():
         w += 1
         if  not w % 1000 :
             print(w)
+
+
+def add_floating_point(base: int = 0, round_to: int = 3) -> float:
+    """рандомим дробную часть числа.
+
+    base - прибавляем дробь к этому
+
+    round_to - округляем до этого знака
+    """
+    return base + round(random.random(), 3)
+
+
+def parse_int(base: int) -> str:
+        
+        output = ''
+        base_i = abs(base)
+        while base_i > 0:
+            output = f'{str(base_i % 2)}' + output
+            base_i //= 2
+        prefix = '0b' if base > 0 else '-0b'
+        return f'{prefix}{output}'
