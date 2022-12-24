@@ -214,26 +214,29 @@ def t4(base: int | float, float_precision: int = 3) -> str:
             base_i //= 2
         prefix = '0b' if base > 0 else '-0b'
         return f'{prefix}{output}'
+        
+    # решение с geeksforgeeks 
+    """
+    # def positive_float(base: float, precision=float_precision) -> str:
+    #     '''переводим положительное дробное число в двоичную систему'''
+    #     '''дробим число на целую и дробную части.
+    #     Целую часть считаем как позитив инт.
+    #     Дробную часть рекурсивно умножаем на два и "целое" от результата
+    #      строково прибавляем к части после запятой, k раз
+    #      k- точность, кол-во знаков после запятой'''
 
-    def positive_float(base: float, precision=float_precision) -> str:
-        """переводим положительное дробное число в двоичную систему"""
-        """дробим число на целую и дробную части.
-        Целую часть считаем как позитив инт.
-        Дробную часть рекурсивно умножаем на два и "целое" от результата
-         строково прибавляем к части после запятой, k раз
-         k- точность, кол-во знаков после запятой"""
-
-        base_fractured = [int(base), exract_fraction(base)]
-        whole_part = parse_int(base_fractured[0])
-        fractured_part = '.'
-        base_fractured[1] = round(base_fractured[1], precision)
-        tmp = base_fractured[1]
-        for i in range(precision, 0, -1):
-            tmp = round(tmp*2, precision)
-            fractured_part += str(int(tmp))
-            tmp = round(tmp - int(tmp), precision)
-        output = f'{whole_part}{fractured_part}'
-        return output
+    #     base_fractured = [int(base), exract_fraction(base)]
+    #     whole_part = parse_int(base_fractured[0])
+    #     fractured_part = '.'
+    #     base_fractured[1] = round(base_fractured[1], precision)
+    #     tmp = base_fractured[1]
+    #     for i in range(precision, 0, -1):
+    #         tmp = round(tmp*2, precision)
+    #         fractured_part += str(int(tmp))
+    #         tmp = round(tmp - int(tmp), precision)
+    #     output = f'{whole_part}{fractured_part}'
+    #     return output
+    """
 
     def parse_float(base: float) -> str:
         """
@@ -269,10 +272,6 @@ def t4(base: int | float, float_precision: int = 3) -> str:
 
     return (parse_int(base) if isinstance(base, int)
             else parse_float(base))
-    if isinstance(base, int):
-        return parse_int(base)
-    return parse_float(base)  # if base > 0 else negative_float(base)
-    # Должно работать с отрицательными флотами...
 
 
 def main():
